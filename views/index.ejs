@@ -1,0 +1,115 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+  .hero {
+  background: linear-gradient(135deg, #1e3a8a, #2563eb);
+  color: white;
+  padding: 60px 20px;   /* reduced from 100px */
+  text-align: center;
+  border-radius: 0 0 25px 25px;
+  }
+
+  .feature-box {
+    padding: 30px;
+    border-radius: 15px;
+    transition: 0.3s;
+  }
+
+  .feature-box:hover {
+    transform: translateY(-6px);
+  }
+
+  .section-title {
+    font-weight: 700;
+    margin-bottom: 30px;
+  }
+</style>
+
+<!-- HERO SECTION -->
+<div class="hero">
+  <div class="container">
+    <h1 class="display-4 fw-bold">🌿 Smart Crop Disease Detection</h1>
+    <p class="lead mt-3">
+      AI-powered platform that helps farmers detect crop diseases early and take preventive action.
+    </p>
+
+    <div class="mt-4">
+      <a href="/login" class="btn btn-light btn-lg me-3">Login</a>
+      <a href="/signup" class="btn btn-outline-light btn-lg">Register</a>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT SECTION -->
+<div class="container mt-5">
+  <div class="text-center">
+    <h2 class="section-title">Why This Platform?</h2>
+    <p class="text-muted">
+      Crop diseases cause major loss in agriculture. Early detection can save crops,
+      reduce pesticide usage, and increase farmer income.
+    </p>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="row mt-5 g-4">
+
+    <div class="col-md-3">
+      <div class="card feature-box shadow-sm text-center">
+        <div class="card-body">
+          <h5>📸 Image-Based Detection</h5>
+          <p class="text-muted">Upload leaf image to detect disease using Deep Learning.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card feature-box shadow-sm text-center">
+        <div class="card-body">
+          <h5>📊 Severity Prediction</h5>
+          <p class="text-muted">Get confidence score to understand disease intensity.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card feature-box shadow-sm text-center">
+        <div class="card-body">
+          <h5>📄 Digital Health Report</h5>
+          <p class="text-muted">Generate report for Krushi Kendra consultation.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card feature-box shadow-sm text-center">
+        <div class="card-body">
+          <h5>👨‍🌾 Expert Support</h5>
+          <p class="text-muted">Consult agricultural experts with AI-generated insights.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="container mt-5 mb-5">
+  <div class="text-center">
+    <h2 class="section-title">How It Works</h2>
+  </div>
+
+  <div class="row text-center mt-4">
+    <div class="col-md-4">
+      <h5>1️⃣ Upload Image</h5>
+      <p class="text-muted">Take a clear photo of crop leaf and upload.</p>
+    </div>
+    <div class="col-md-4">
+      <h5>2️⃣ AI Analysis</h5>
+      <p class="text-muted">System analyzes image using trained ML model.</p>
+    </div>
+    <div class="col-md-4">
+      <h5>3️⃣ Get Results</h5>
+      <p class="text-muted">Receive disease name and confidence instantly.</p>
+    </div>
+  </div>
+</div>

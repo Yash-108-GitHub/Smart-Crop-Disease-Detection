@@ -1,0 +1,67 @@
+/* Custom button styles */
+    .login-btn {
+      margin-right: 10px;
+    }
+
+    .navColor{
+      background-color: #16bd13;
+    }
+
+    .signup-btn:hover {
+      background-color: #EAB308;
+      color: #1E40AF;
+    }
+
+    .logo-badge {
+      display: flex;
+      align-items: center;
+      background-color: #FACC15; /* yellow background */
+       /* dark blue border */
+      border-radius: 50px; /* pill/ellipse shape */
+      padding: 5px 15px; /* space around icon + text */
+      color: #1E40AF;
+
+    }
+
+    .logo-badge i {
+      font-size: 1.2rem;
+      margin-right: 8px; /* space between icon and label */
+    }
+
+    .card-body{
+      height: 150px;
+    }
+
+    .cards{
+      display: flex;
+    }
+    .feature-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    flex-wrap: wrap;   /* makes responsive */
+    margin-top: 20px;
+    }
+
+  .feature-card {
+    width: 260px;      /* fixed width so not wide */
+    border-radius: 14px;
+    overflow: hidden;
+    transition: 0.2s;
+  }
+
+  .feature-card:hover {
+    transform: translateY(-6px);
+  }
+
+  .dash-img {
+    height: 150px;
+    object-fit: cover;
+  }
+
+  /* Responsive Menu */
+  @media (max-width: 768px) {
+    nav ul {
+      display: none; /* Simple mobile hide, can be improved with hamburger menu */
+    }
+  }

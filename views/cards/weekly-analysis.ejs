@@ -1,0 +1,74 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h3 class="mb-0">📅 Weekly Analysis</h3>
+      <small class="text-muted">Last 7 days crop health summary</small>
+    </div>
+    <a href="/home" class="btn btn-outline-primary">Back</a>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-md-3">
+      <div class="card shadow-sm p-3">
+        <h6 class="mb-1">Total Scans</h6>
+        <h4 class="mb-0"><%= totalScans %></h4>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card shadow-sm p-3">
+        <h6 class="mb-1">Top Disease</h6>
+        <p class="mb-0 text-muted"><%= topDisease %></p>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card shadow-sm p-3">
+        <h6 class="mb-1">Avg Confidence</h6>
+        <h4 class="mb-0"><%= avgConfidence %>%</h4>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card shadow-sm p-3">
+        <h6 class="mb-1">Trend</h6>
+        <p class="mb-0"><%= trend %></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert alert-info">
+    <strong>Suggestion:</strong> <%= suggestion %>
+  </div>
+
+  <div class="card shadow-sm p-3">
+    <h5 class="mb-3">Scan History (Last 7 Days)</h5>
+
+    <% if (scans.length === 0) { %>
+      <p class="text-muted mb-0">No scans available. Upload a leaf image from Disease Detection.</p>
+    <% } else { %>
+      <div class="table-responsive">
+        <table class="table table-bordered align-middle">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Disease</th>
+              <th>Confidence</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% scans.forEach(s => { %>
+              <tr>
+                <td><%= new Date(s.createdAt).toLocaleString() %></td>
+                <td><%= s.disease %></td>
+                <td><%= s.confidence %>%</td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </div>
+</div>

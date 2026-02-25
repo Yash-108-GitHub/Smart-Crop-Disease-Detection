@@ -1,0 +1,112 @@
+<% layout("/layouts/boilerplate")%>
+
+<!-- _______________________________________________________________________________________________________________________________ -->
+
+<style>
+  .dash-img {
+    height: 150px;
+    object-fit: cover;
+  }
+
+  .feature-card {
+    transition: 0.2s;
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .feature-card:hover {
+    transform: translateY(-6px);
+  }
+
+  .top-card {
+    border-radius: 14px;
+  }
+</style>
+
+<div class="container py-4">
+
+  <!-- Top Info Row -->
+  <!-- <div class="row g-4 mb-4">
+    <div class="col-md-6">
+      <div class="card shadow-sm p-3 top-card">
+        <h6 class="mb-2">👤 Profile</h6>
+        <p class="mb-0 text-muted small">
+          Welcome Farmer 👋 <br>
+          Manage crops and monitor health reports.
+        </p>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card shadow-sm p-3 top-card">
+        <h6 class="mb-2">⛅ Weather</h6>
+        <p class="mb-0 text-muted small">
+          29°C | Humidity: 65% <br>
+          Good conditions for crop growth.
+        </p>
+      </div>
+    </div>
+  </div> -->
+
+  <!-- Feature Cards -->
+<div class="feature-wrapper">
+
+  <a href="/detect-disease" class="text-decoration-none text-dark">
+    <div class="card feature-card shadow-sm">
+      <img src="/images/ChatGPT Image Feb 23, 2026, 02_22_57 PM.png"
+           class="card-img-top dash-img"
+           alt="Disease Detection">
+      <div class="card-body text-center">
+        <h6 class="card-title mb-2">Disease Detection</h6>
+        <p class="card-text text-muted small">
+          Upload leaf image and detect disease instantly.
+        </p>
+      </div>
+    </div>
+  </a>
+
+  <a href="/severity-analysis" class="text-decoration-none text-dark">
+    <div class="card feature-card shadow-sm">
+      <img src="/images/severity.jpg"
+           class="card-img-top dash-img"
+           alt="Severity Analysis">
+      <div class="card-body text-center">
+        <h6 class="card-title mb-2">Severity Analysis</h6>
+        <p class="card-text text-muted small">
+          Check infection severity and confidence score.
+        </p>
+      </div>
+    </div>
+  </a>
+
+  <a href="/digital-report" class="text-decoration-none text-dark">
+    <div class="card feature-card shadow-sm">
+      <img src="/images/report.jpg"
+           class="card-img-top dash-img"
+           alt="Digital Report">
+      <div class="card-body text-center">
+        <h6 class="card-title mb-2">Digital Report</h6>
+        <p class="card-text text-muted small">
+          Generate crop health report for Krushi Kendra.
+        </p>
+      </div>
+    </div>
+  </a>
+
+  <a href="/weekly-analysis" class="text-decoration-none text-dark">
+    <div class="card feature-card shadow-sm">
+      <img src="/images/weekly.jpg" class="card-img-top dash-img" alt="Weekly Analysis">
+      <div class="card-body text-center">
+        <h6 class="card-title mb-2">Weekly Analysis</h6>
+        <p class="card-text text-muted small mb-0">
+          Track weekly crop health and get suggestions.
+        </p>
+      </div>
+    </div>
+  </a>
+
+</div>
+
+</div>
+
+</div>

@@ -1,0 +1,19 @@
+# Node
+node_modules/
+npm-debug.log*
+
+# Environment variables
+.env
+
+# Python virtual environment
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# Uploaded images on website
+uploads/
+
+# Dataset to train the model, we already trained the model and stored in model.h5 so we don't need dataset
+dataset/
+datasets/

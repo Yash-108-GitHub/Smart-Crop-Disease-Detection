@@ -1,0 +1,26 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="container d-flex justify-content-center align-items-center vh-100">
+        <div class="card shadow-lg p-4" style="max-width: 400px; width: 100%; border-radius: 15px;">
+            <h3 class="text-center mb-4 fw-bold">Create Account</h3>
+
+
+            <!-- Form signup-->
+            <form action="/signup" method="POST" class="Signup_form">
+                <div class="mb-3">
+                    <label class="form-label">Username</label>
+                    <input name="username" type="text" class="form-control rounded-pill" placeholder="Enter your name">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email </label>
+                    <input name="email" type="email" class="form-control rounded-pill" placeholder="Enter your email or phone">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input name="password" type="password" class="form-control rounded-pill" placeholder="Enter password">
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 rounded-pill">Sign Up</button>
+            </form>
+        </div>
+    </div>
