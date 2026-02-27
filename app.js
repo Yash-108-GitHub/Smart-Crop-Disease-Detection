@@ -231,8 +231,8 @@ app.get("/detect-disease", (req, res) => {
 
 
 
-const ML_URL = process.env.ML_PREDICT_URL || "http://127.0.0.1:5000/predict";
-// const ML_URL = "https://smart-crop-disease-detection-ml-server.onrender.com/predict";
+const ML_URL = "https://smart-crop-disease-detection-ml-server.onrender.com/predict" || "http://127.0.0.1:5000/predict";
+
 app.post("/detect-disease", upload.single("image"), async (req, res) => {
   try {
     if (!req.file) {
