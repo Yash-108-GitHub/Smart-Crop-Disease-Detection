@@ -193,48 +193,6 @@ app.get("/detect-disease", (req, res) => {
     // res.send("predict disease route");
 });
 
-// app.post("/detect-disease", upload.single("image"), async (req, res) => {
-//   try {
-//     if (!req.file) {
-//       return res.render("cards/detect-disease", {
-//         prediction: null,
-//         imageUrl: null,
-//         error: "Please upload an image."
-//       });
-//     }
-
-//     const formData = new FormData();
-//     formData.append("image", fs.createReadStream(req.file.path));
-
-//     const response = await axios.post("http://127.0.0.1:5000/predict", formData, {
-//       headers: formData.getHeaders(),
-//       timeout: 60000,
-//     });
-
-//     const imageUrl = `/uploads/${req.file.filename}`;
-
-//     return res.render("cards/detect-disease", {
-//       prediction: response.data,
-//       imageUrl,
-//       error: null
-//     });
-
-//   } catch (err) {
-//     console.log(err?.message || err);
-//     return res.render("cards/detect-disease", {
-//       prediction: null,
-//       imageUrl: null,
-//       error: "Prediction failed. Make sure Flask server is running on port 5000."
-//     });
-//   }
-// });
-
-
-
-
-
-// const ML_URL = process.env.ML_PREDICT_URL || "http://127.0.0.1:5000/predict";
-const ML_URL = "https://smart-crop-disease-detection-ml-server.onrender.com/predict";
 app.post("/detect-disease", upload.single("image"), async (req, res) => {
   try {
     if (!req.file) {
@@ -248,11 +206,9 @@ app.post("/detect-disease", upload.single("image"), async (req, res) => {
     const formData = new FormData();
     formData.append("image", fs.createReadStream(req.file.path));
 
-    const response = await axios.post(ML_URL, formData, {
+    const response = await axios.post("http://127.0.0.1:5000/predict", formData, {
       headers: formData.getHeaders(),
-      timeout: 180000,
-      maxBodyLength: Infinity,
-      maxContentLength: Infinity,
+      timeout: 60000,
     });
 
     const imageUrl = `/uploads/${req.file.filename}`;
@@ -268,10 +224,54 @@ app.post("/detect-disease", upload.single("image"), async (req, res) => {
     return res.render("cards/detect-disease", {
       prediction: null,
       imageUrl: null,
-      error: "Prediction failed. ML server not reachable."
+      error: "Prediction failed. Make sure Flask server is running on port 5000."
     });
   }
 });
+
+
+
+
+
+// const ML_URL = process.env.ML_PREDICT_URL || "http://127.0.0.1:5000/predict";
+// const ML_URL = "https://smart-crop-disease-detection-ml-server.onrender.com/predict";
+// app.post("/detect-disease", upload.single("image"), async (req, res) => {
+//   try {
+//     if (!req.file) {
+//       return res.render("cards/detect-disease", {
+//         prediction: null,
+//         imageUrl: null,
+//         error: "Please upload an image."
+//       });
+//     }
+
+//     const formData = new FormData();
+//     formData.append("image", fs.createReadStream(req.file.path));
+
+//     const response = await axios.post(ML_URL, formData, {
+//       headers: formData.getHeaders(),
+//       timeout: 180000,
+//       maxBodyLength: Infinity,
+//       maxContentLength: Infinity,
+//     });
+
+//     const imageUrl = `/uploads/${req.file.filename}`;
+
+//     return res.render("cards/detect-disease", {
+//       prediction: response.data,
+//       imageUrl,
+//       error: null
+//     });
+
+//   } catch (err) {
+//     console.log(err?.message || err);
+//     return res.render("cards/detect-disease", {
+//       prediction: null,
+//       imageUrl: null,
+//       error: "Prediction failed. ML server not reachable."
+//     });
+//   }
+// });
 
 
 // ______________________________________________________________________________________________________________
