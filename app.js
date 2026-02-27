@@ -243,7 +243,7 @@ app.post("/detect-disease", upload.single("image"), async (req, res) => {
 
     const response = await axios.post(ML_URL, formData, {
       headers: formData.getHeaders(),
-      timeout: 60000,
+      timeout: 180000,
     });
 
     const imageUrl = `/uploads/${req.file.filename}`;
