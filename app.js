@@ -180,8 +180,8 @@ app.get("/home", (req, res) => {
 
 // ___________________________________________________________________________________________
 app.get("/detect-disease", (req, res) => {
-    // res.render("cards/detect-disease");
-    res.send("predict disease route");
+    res.render("cards/detect-disease");
+    // res.send("predict disease route");
 });
 
 app.post("/detect-disease", upload.single("image"), async (req, res) => {
@@ -274,7 +274,7 @@ app.get("/weekly-analysis", async (req, res) => {
       }
     }
 
-    res.render("cards/weekly-analysi", {
+    res.render("cards/weekly-analysis", {
       totalScans,
       topDisease,
       avgConfidence,
@@ -285,7 +285,7 @@ app.get("/weekly-analysis", async (req, res) => {
 
   } catch (err) {
     console.log(err);
-    res.render("cards/weekly-analysi", {
+    res.render("cards/weekly-analysis", {
       totalScans: 0,
       topDisease: "No data",
       avgConfidence: 0,
