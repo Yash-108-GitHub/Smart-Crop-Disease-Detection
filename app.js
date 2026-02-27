@@ -18,6 +18,13 @@ const fs = require("fs");
 const axios = require("axios");
 const Prediction = require("./models/prediction");
 
+
+const uploadsDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+
 //authentication
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
@@ -244,6 +251,8 @@ app.post("/detect-disease", upload.single("image"), async (req, res) => {
     const response = await axios.post(ML_URL, formData, {
       headers: formData.getHeaders(),
       timeout: 180000,
+      maxBodyLength: Infinity,
+      maxContentLength: Infinity,
     });
 
     const imageUrl = `/uploads/${req.file.filename}`;
@@ -339,6 +348,11 @@ app.get("/weekly-analysis", async (req, res) => {
       scans: []
     });
   }
+});
+// ________________________________________________________________________________________________
+app.use((err, req, res, next) => {
+  console.log("MULTER/APP ERROR:", err);
+  return res.status(500).send("Upload failed / Server error");
 });
 
 // ____________________________________________________________________________________________________________
