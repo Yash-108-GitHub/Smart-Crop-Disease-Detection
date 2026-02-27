@@ -10,6 +10,7 @@ venv/
 .venv/
 __pycache__/
 *.pyc
+venv310
 
 # Uploaded images on website
 uploads/
