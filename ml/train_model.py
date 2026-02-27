@@ -2,10 +2,9 @@ import tensorflow as tf
 from tensorflow.keras.applications import MobileNetV2
 from tensorflow.keras import layers, models
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-import os
+import json
 
 DATASET_PATH = "dataset"
-
 IMG_SIZE = 160   # smaller = faster training
 BATCH_SIZE = 16  # lower batch for CPU
 
@@ -21,6 +20,12 @@ train_data = datagen.flow_from_directory(
     class_mode="categorical",
     subset="training"
 )
+
+# ✅ Create labels.json after train_data is created
+labels = list(train_data.class_indices.keys())
+with open("labels.json", "w") as f:
+    json.dump(labels, f)
+print("✅ labels.json created")
 
 val_data = datagen.flow_from_directory(
     DATASET_PATH,
@@ -57,9 +62,8 @@ model.summary()
 history = model.fit(
     train_data,
     validation_data=val_data,
-    epochs=3   # keep small for first test
+    epochs=3
 )
 
 model.save("model.h5")
-
 print("✅ Model training complete and saved!")

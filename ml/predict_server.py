@@ -9,7 +9,7 @@ import json
 with open("labels.json", "r") as f:
     class_labels = json.load(f)
 
-    
+
 app = Flask(__name__)
 
 # Load trained model
@@ -19,9 +19,11 @@ model = tf.keras.models.load_model("model.h5")
 IMG_SIZE = 160
 
 # Get class labels
-DATASET_PATH = "dataset"
+# DATASET_PATH = "dataset"
 
-class_labels = sorted(os.listdir(DATASET_PATH))
+# class_labels = sorted(os.listdir(DATASET_PATH))
+
+# 
 
 @app.route("/predict", methods=["POST"])
 def predict():
