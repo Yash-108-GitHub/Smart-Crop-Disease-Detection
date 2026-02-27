@@ -130,7 +130,8 @@ app.post("/login", async(req,res)=>{
   req.flash("success", "welcome back");
   let redirectUrl = res.locals.redirectUrl || "/home";
 })
-// --------------------------------------------------------
+// -___________________________________________________________________________________________________________________
+
 // multer
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -149,7 +150,8 @@ app.post("/upload", upload.single("image"), (req, res) => {
     file: req.file,
   });
 });
-// --------------------------------------------------------------------
+// _____________________________________________________________________________________________________
+
 app.post("/predict", (req, res) => {
 
   console.log("BODY:", req.body);
@@ -178,11 +180,49 @@ app.get("/home", (req, res) => {
    res.render("home");
 });
 
-// ___________________________________________________________________________________________
+// ____________________________________________________________________________________________________________________
 app.get("/detect-disease", (req, res) => {
     res.render("cards/detect-disease");
     // res.send("predict disease route");
 });
+
+// app.post("/detect-disease", upload.single("image"), async (req, res) => {
+//   try {
+//     if (!req.file) {
+//       return res.render("cards/detect-disease", {
+//         prediction: null,
+//         imageUrl: null,
+//         error: "Please upload an image."
+//       });
+//     }
+
+//     const formData = new FormData();
+//     formData.append("image", fs.createReadStream(req.file.path));
+
+//     const response = await axios.post("http://127.0.0.1:5000/predict", formData, {
+//       headers: formData.getHeaders(),
+//       timeout: 60000,
+//     });
+
+//     const imageUrl = `/uploads/${req.file.filename}`;
+
+//     return res.render("cards/detect-disease", {
+//       prediction: response.data,
+//       imageUrl,
+//       error: null
+//     });
+
+//   } catch (err) {
+//     console.log(err?.message || err);
+//     return res.render("cards/detect-disease", {
+//       prediction: null,
+//       imageUrl: null,
+//       error: "Prediction failed. Make sure Flask server is running on port 5000."
+//     });
+//   }
+// });
+
+const ML_URL = process.env.ML_PREDICT_URL || "http://127.0.0.1:5000/predict";
 
 app.post("/detect-disease", upload.single("image"), async (req, res) => {
   try {
@@ -197,7 +237,7 @@ app.post("/detect-disease", upload.single("image"), async (req, res) => {
     const formData = new FormData();
     formData.append("image", fs.createReadStream(req.file.path));
 
-    const response = await axios.post("http://127.0.0.1:5000/predict", formData, {
+    const response = await axios.post(ML_URL, formData, {
       headers: formData.getHeaders(),
       timeout: 60000,
     });
@@ -215,10 +255,11 @@ app.post("/detect-disease", upload.single("image"), async (req, res) => {
     return res.render("cards/detect-disease", {
       prediction: null,
       imageUrl: null,
-      error: "Prediction failed. Make sure Flask server is running on port 5000."
+      error: "Prediction failed. ML server not reachable."
     });
   }
 });
+
 
 // ______________________________________________________________________________________________________________
 app.get("/weekly-analysis", async (req, res) => {
@@ -296,7 +337,7 @@ app.get("/weekly-analysis", async (req, res) => {
   }
 });
 
-// _______________________________________________________________________
+// ____________________________________________________________________________________________________________
 app.listen("4000",()=>{
     console.log("app is listening on port 4000");
 })
