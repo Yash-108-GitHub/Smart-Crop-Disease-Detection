@@ -25,6 +25,11 @@ IMG_SIZE = 160
 
 # 
 
+@app.get("/health")
+def health():
+    return {"status": "ok"}, 200
+
+
 @app.route("/predict", methods=["POST"])
 def predict():
     if "image" not in request.files:
