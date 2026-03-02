@@ -214,8 +214,8 @@ app.get("/home", (req, res) => {
 
 // ____________________________________________________________________________________________________________________
 app.get("/detect-disease", (req, res) => {
-    res.render("cards/detect-disease");
-    // res.send("predict disease route");
+    // res.render("cards/detect-disease");
+    res.send("predict disease route");
 });
 
 
@@ -316,7 +316,7 @@ app.get("/weekly-analysis", async (req, res) => {
       }
     }
 
-    res.render("cards/weekly-analysis", {
+    res.render("cards/weekly-analysi", {
       totalScans,
       topDisease,
       avgConfidence,
@@ -327,7 +327,7 @@ app.get("/weekly-analysis", async (req, res) => {
 
   } catch (err) {
     console.log(err);
-    res.render("cards/weekly-analysis", {
+    res.render("cards/weekly-analysi", {
       totalScans: 0,
       topDisease: "No data",
       avgConfidence: 0,
