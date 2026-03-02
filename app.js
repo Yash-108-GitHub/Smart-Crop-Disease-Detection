@@ -252,6 +252,16 @@ app.post("/detect-disease", upload.single("image"), async (req, res) => {
     const formData = new FormData();
     formData.append("image", fs.createReadStream(req.file.path));
 
+    // 👇 ADD THIS BEFORE CALLING ML
+    const ok = await wakeMlServer();
+    if (!ok) {
+      return res.render("cards/detect-disease", {
+        prediction: null,
+        imageUrl: null,
+        error: "ML server is waking up. Please try again in 10-20 seconds."
+      });
+    }
+
     const response = await axios.post(ML_URL, formData, {
       headers: formData.getHeaders(),
       timeout: 180000,
