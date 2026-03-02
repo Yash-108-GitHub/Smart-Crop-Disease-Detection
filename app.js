@@ -29,6 +29,7 @@ if (!fs.existsSync(uploadsDir)) {
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
+const { runInNewContext } = require('vm');
 
 // ____________________________________________________________________
 //Atlas DB URL
@@ -96,7 +97,13 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// -----------------------------------------------------------
+app.use((req,res,next)=>{
+  res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
+  res.locals.currUser = req.user;
+  next();
+})
+// _________________________________________________________________________________________________
 
 app.get("/", (req,res)=>{
     console.log("root");
@@ -133,10 +140,28 @@ app.get("/login", (req, res)=>{
     res.render("users/login");
 })
 
-app.post("/login", async(req,res)=>{
-  req.flash("success", "welcome back");
-  let redirectUrl = res.locals.redirectUrl || "/home";
+app.post(
+  "/login",
+  passport.authenticate("local", {
+    failureRedirect: "/login",
+    failureFlash: true,
+  }),
+  async (req, res) => {
+    req.flash("success", "Welcome back!");
+    res.redirect("/home");
+  }
+);
+
+app.get("/logout", (req,res)=>{
+  req.logout((err)=>{
+    if(err){
+      console.log("err");
+    }
+    req.flash("success","you are logged out!");
+    res.redirect("/");
+  })
 })
+
 // -___________________________________________________________________________________________________________________
 
 // multer
@@ -193,44 +218,9 @@ app.get("/detect-disease", (req, res) => {
     // res.send("predict disease route");
 });
 
-// app.post("/detect-disease", upload.single("image"), async (req, res) => {
-//   try {
-//     if (!req.file) {
-//       return res.render("cards/detect-disease", {
-//         prediction: null,
-//         imageUrl: null,
-//         error: "Please upload an image."
-//       });
-//     }
-
-//     const formData = new FormData();
-//     formData.append("image", fs.createReadStream(req.file.path));
-
-//     const response = await axios.post("http://127.0.0.1:5000/predict", formData, {
-//       headers: formData.getHeaders(),
-//       timeout: 60000,
-//     });
-
-//     const imageUrl = `/uploads/${req.file.filename}`;
-
-//     return res.render("cards/detect-disease", {
-//       prediction: response.data,
-//       imageUrl,
-//       error: null
-//     });
-
-//   } catch (err) {
-//     console.log(err?.message || err);
-//     return res.render("cards/detect-disease", {
-//       prediction: null,
-//       imageUrl: null,
-//       error: "Prediction failed. Make sure Flask server is running on port 5000."
-//     });
-//   }
-// });
 
 
-
+// render python server || local server
 const ML_URL = "https://smart-crop-disease-detection-ml-server.onrender.com/predict" || "http://127.0.0.1:5000/predict";
 
 app.post("/detect-disease", upload.single("image"), async (req, res) => {
