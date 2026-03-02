@@ -19,6 +19,12 @@ const axios = require("axios");
 const Prediction = require("./models/prediction");
 
 
+const isRender = !!process.env.RENDER;
+const ML_URL = isRender
+  ? "https://smart-crop-disease-detection-ml-server.onrender.com/predict"
+  : "http://127.0.0.1:5000/predict";
+
+
 const uploadsDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
@@ -184,22 +190,7 @@ app.post("/upload", upload.single("image"), (req, res) => {
 });
 // _____________________________________________________________________________________________________
 
-// wake up ml flask server before calling it.
-const ML_BASE = "https://smart-crop-disease-detection-ml-server.onrender.com";
-const ML_PREDICT = `${ML_BASE}/predict`;
 
-async function wakeMlServer() {
-  // try 3 times
-  for (let i = 0; i < 3; i++) {
-    try {
-      await axios.get(`${ML_BASE}/health`, { timeout: 10000 });
-      return true;
-    } catch (e) {
-      await new Promise(r => setTimeout(r, 4000)); // wait 4s
-    }
-  }
-  return false;
-}
 
 // ________________________________________________________________
 app.post("/predict", (req, res) => {
@@ -237,8 +228,27 @@ app.get("/detect-disease", (req, res) => {
 });
 
 // render python server || local server
-const ML_URL = "https://smart-crop-disease-detection-ml-server.onrender.com/predict" || "http://127.0.0.1:5000/predict";
+// const ML_URL = "https://smart-crop-disease-detection-ml-server.onrender.com/predict" || "http://127.0.0.1:5000/predict";
 
+
+// _________________________________________________________________________________________________________________________
+// wake up ml flask server before calling it.
+const ML_BASE = "https://smart-crop-disease-detection-ml-server.onrender.com";
+const ML_PREDICT = `${ML_BASE}/predict`;
+
+async function wakeMlServer() {
+  // try 3 times
+  for (let i = 0; i < 3; i++) {
+    try {
+      await axios.get(`${ML_BASE}/health`, { timeout: 10000 });
+      return true;
+    } catch (e) {
+      await new Promise(r => setTimeout(r, 4000)); // wait 4s
+    }
+  }
+  return false;
+}
+// ______________________________________________________________________________________________
 app.post("/detect-disease", upload.single("image"), async (req, res) => {
   try {
     if (!req.file) {
@@ -258,7 +268,7 @@ app.post("/detect-disease", upload.single("image"), async (req, res) => {
       return res.render("cards/detect-disease", {
         prediction: null,
         imageUrl: null,
-        error: "ML server is waking up. Please try again in 10-20 seconds."
+        error: "ML server is waking up. Please try again in 25-30 seconds."
       });
     }
 
