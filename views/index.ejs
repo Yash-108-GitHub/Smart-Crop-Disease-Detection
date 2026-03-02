@@ -34,8 +34,12 @@
     </p>
 
     <div class="mt-4">
-      <a href="/login" class="btn btn-light btn-lg me-3">Login</a>
-      <a href="/signup" class="btn btn-outline-light btn-lg">Register</a>
+      <% if(currUser){ %>
+          <a href="/detect-disease" class="btn btn-light btn-lg me-3">Start Detection</a>
+      <%} else {%>
+          <a href="/login" class="btn btn-light btn-lg me-3">Login</a>
+          <a href="/signup" class="btn btn-outline-light btn-lg">Register</a>
+      <% } %>
     </div>
   </div>
 </div>

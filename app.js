@@ -18,18 +18,29 @@ const fs = require("fs");
 const axios = require("axios");
 const Prediction = require("./models/prediction");
 
+// _______________________________________________________________________________
+// if we are using render then predict-disease route will use render ml server,
+// and if we are running the website locally then predict-disease route will use local ml server -> http://127.0.0.1:5000
+
+// When your app runs on Render, Render automatically sets some environment variables inside the server.
+// It sets,
+// RENDER = true
+// and
+// 🖥 On your local machine:
+// process.env.RENDER = undefined
 
 const isRender = !!process.env.RENDER;
 const ML_URL = isRender
   ? "https://smart-crop-disease-detection-ml-server.onrender.com/predict"
   : "http://127.0.0.1:5000/predict";
 
-
+// ________________________________________________________________________________
+// this is used to make the uploads section to store the image then render can use it for detecting disease.
 const uploadsDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
-
+// ___________________________________________________________________________________
 
 //authentication
 const passport = require("passport");
@@ -114,7 +125,6 @@ app.use((req,res,next)=>{
 app.get("/", (req,res)=>{
     console.log("root");
     res.render("index");
-    
 })
 
 app.get("/signup", (req, res)=>{
@@ -191,8 +201,6 @@ app.post("/upload", upload.single("image"), (req, res) => {
 // _____________________________________________________________________________________________________
 
 
-
-// ________________________________________________________________
 app.post("/predict", (req, res) => {
 
   console.log("BODY:", req.body);
@@ -227,11 +235,11 @@ app.get("/detect-disease", (req, res) => {
     // res.send("predict disease route");
 });
 
+
 // render python server || local server
 // const ML_URL = "https://smart-crop-disease-detection-ml-server.onrender.com/predict" || "http://127.0.0.1:5000/predict";
 
 
-// _________________________________________________________________________________________________________________________
 // wake up ml flask server before calling it.
 const ML_BASE = "https://smart-crop-disease-detection-ml-server.onrender.com";
 const ML_PREDICT = `${ML_BASE}/predict`;
@@ -248,7 +256,8 @@ async function wakeMlServer() {
   }
   return false;
 }
-// ______________________________________________________________________________________________
+
+
 app.post("/detect-disease", upload.single("image"), async (req, res) => {
   try {
     if (!req.file) {
