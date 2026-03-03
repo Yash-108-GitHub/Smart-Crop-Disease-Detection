@@ -32,7 +32,7 @@ const Prediction = require("./models/prediction");
 const isRender = !!process.env.RENDER;
 const ML_URL = isRender
   ? "https://smart-crop-disease-detection-ml-server.onrender.com"
-  : "http://127.0.0.1:5000/predict";
+  : "http://127.0.0.1:5000";
 
 // ________________________________________________________________________________
 // this is used to make the uploads section to store the image then render can use it for detecting disease.
