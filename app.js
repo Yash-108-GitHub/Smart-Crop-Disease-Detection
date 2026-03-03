@@ -30,9 +30,11 @@ const Prediction = require("./models/prediction");
 // process.env.RENDER = undefined
 
 const isRender = !!process.env.RENDER;
-const ML_URL = isRender
-  ? "https://smart-crop-disease-detection-ml-server.onrender.com"
-  : "http://127.0.0.1:5000";
+// const ML_URL = isRender
+//   ? "https://smart-crop-disease-detection-ml-server.onrender.com"
+//   : "http://127.0.0.1:5000";
+
+const ML_URL = "https://smart-crop-disease-detection-ml-server.onrender.com";
 
 // ________________________________________________________________________________
 // this is used to make the uploads section to store the image then render can use it for detecting disease.
@@ -248,7 +250,7 @@ async function wakeMlServer() {
   // try 3 times
   for (let i = 0; i < 3; i++) {
     try {
-      await axios.get(ML_HEALTH_URL, { timeout: 1000000 });
+      await axios.get(ML_HEALTH_URL, { timeout: 100000 });
       return true;
     } catch (e) {
       await new Promise(r => setTimeout(r, 4000)); // wait 3s then call the server again.
