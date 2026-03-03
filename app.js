@@ -257,7 +257,7 @@ app.get("/detect-disease", (req, res) => {
 // const ML_PREDICT_URL = `${ML_URL}/predict`;
 
 
-async function wakeMlServer(maxWaitMs = 10 * 60 * 1000) { // 90 seconds
+async function wakeMlServer(maxWaitMs = 90000) { // 90 seconds
   const start = Date.now();
   let delay = 2000;
 
