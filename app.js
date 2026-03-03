@@ -250,7 +250,7 @@ async function wakeMlServer() {
   for (let i = 0; i < 3; i++) {
     try {
       console.log("calling ml server",ML_HEALTH_URL);
-      await axios.get(ML_HEALTH_URL, { timeout: 90000 });
+      await axios.get(ML_HEALTH_URL, { timeout: 120000 });
       return true;
     } catch (e) {
       await new Promise(r => setTimeout(r, 5000)); // wait 3s then call the server again.
