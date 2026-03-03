@@ -231,8 +231,8 @@ app.get("/home", (req, res) => {
 
 // ____________________________________________________________________________________________________________________
 app.get("/detect-disease", (req, res) => {
-    res.render("cards/detect-disease");
-    // res.send("predict disease route");
+    // res.render("cards/detect-disease");
+    res.send("predict disease route");
 });
 
 
@@ -241,14 +241,15 @@ app.get("/detect-disease", (req, res) => {
 
 
 // wake up ml flask server before calling it.
-const ML_BASE = "https://smart-crop-disease-detection-ml-server.onrender.com";
-const ML_PREDICT = `${ML_BASE}/predict`;
+// const ML_BASE = "https://smart-crop-disease-detection-ml-server.onrender.com";
+const ML_HEALTH = `${ML_URL}/health`;
+const ML_PREDICT = `${ML_URL}/predict`;
 
 async function wakeMlServer() {
   // try 3 times
   for (let i = 0; i < 3; i++) {
     try {
-      await axios.get(`${ML_BASE}/health`, { timeout: 10000 });
+      await axios.get(ML_HEALTH, { timeout: 10000 });
       return true;
     } catch (e) {
       await new Promise(r => setTimeout(r, 4000)); // wait 4s
@@ -281,7 +282,7 @@ app.post("/detect-disease", upload.single("image"), async (req, res) => {
       });
     }
 
-    const response = await axios.post(ML_URL, formData, {
+    const response = await axios.post(ML_PREDICT, formData, {
       headers: formData.getHeaders(),
       timeout: 180000,
       maxBodyLength: Infinity,
@@ -360,7 +361,7 @@ app.get("/weekly-analysis", async (req, res) => {
       }
     }
 
-    res.render("cards/weekly-analysis", {
+    res.render("cards/weekly-analysi", {
       totalScans,
       topDisease,
       avgConfidence,
@@ -371,7 +372,7 @@ app.get("/weekly-analysis", async (req, res) => {
 
   } catch (err) {
     console.log(err);
-    res.render("cards/weekly-analysis", {
+    res.render("cards/weekly-analysi", {
       totalScans: 0,
       topDisease: "No data",
       avgConfidence: 0,
