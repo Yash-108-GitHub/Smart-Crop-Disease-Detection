@@ -243,6 +243,7 @@ app.get("/home", (req, res) => {
 
 // ____________________________________________________________________________________________________________________
 app.get("/detect-disease", (req, res) => {
+    wakeMlServer();
     res.render("cards/detect-disease");
     // res.send("predict disease route");
 });
