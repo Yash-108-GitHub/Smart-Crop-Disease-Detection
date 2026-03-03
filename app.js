@@ -251,7 +251,7 @@ async function wakeMlServer() {
       await axios.get(ML_HEALTH_URL, { timeout: 1000000 });
       return true;
     } catch (e) {
-      await new Promise(r => setTimeout(r, 3000)); // wait 3s then call the server again.
+      await new Promise(r => setTimeout(r, 4000)); // wait 3s then call the server again.
     }
   }
   return false;
