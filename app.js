@@ -34,7 +34,7 @@ const Prediction = require("./models/prediction");
 //   ? "https://smart-crop-disease-detection-ml-server.onrender.com"
 //   : "http://127.0.0.1:5000";
 
-const isRender = !!process.env.RENDER;
+const isRender = !!process.env.RENDER_EXTERNAL_URL || !!process.env.RENDER_SERVICE_NAME;
 
 const ML_BASE = isRender
   ? "https://smart-crop-disease-detection-ml-server.onrender.com"
@@ -42,6 +42,9 @@ const ML_BASE = isRender
 
 const ML_HEALTH_URL = `${ML_BASE}/health`;
 const ML_PREDICT_URL = `${ML_BASE}/predict`;
+
+console.log("isRender:", isRender);
+console.log("HEALTH:", ML_HEALTH_URL);
 
 // ________________________________________________________________________________
 // this is used to make the uploads section to store the image then render can use it for detecting disease.
@@ -254,7 +257,7 @@ app.get("/detect-disease", (req, res) => {
 // const ML_PREDICT_URL = `${ML_URL}/predict`;
 
 
-async function wakeMlServer(maxWaitMs = 90000) { // 90 seconds
+async function wakeMlServer(maxWaitMs = 10 * 60 * 1000) { // 90 seconds
   const start = Date.now();
   let delay = 2000;
 
