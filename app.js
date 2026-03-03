@@ -245,16 +245,36 @@ app.get("/detect-disease", (req, res) => {
 const ML_HEALTH_URL = `${ML_URL}/health`;
 const ML_PREDICT_URL = `${ML_URL}/predict`;
 
-async function wakeMlServer() {
+async function wakeMlServer(maxWaitMs = 90000) {
+  const start = Date.now();
+
+  while (Date.now() - start < maxWaitMs) {
     try {
-      console.log("calling ml server",ML_HEALTH_URL);
-      await axios.get(ML_HEALTH_URL, { timeout: 120000 });
-      return true;
+      const resp = await axios.get(ML_HEALTH_URL, {
+        timeout: 15000,
+        validateStatus: () => true, // don't throw on non-200
+      });
+
+      // If Render is warming, it often returns HTML (string)
+      const isJsonOk =
+        resp.status === 200 &&
+        typeof resp.data === "object" &&
+        resp.data?.status === "ok";
+
+      if (isJsonOk) return true;
+
+      // If you want: print what you received (HTML vs code)
+      console.log("WAKE not ready:", resp.status, typeof resp.data);
+
     } catch (e) {
-      // await new Promise(r => setTimeout(r, 5000)); // wait 3s then call the server again.
-      return false;
+      console.log("WAKE error:", e.code || e.message);
     }
+
+    await new Promise(r => setTimeout(r, 5000)); // wait 5s then retry
   }
+
+  return false;
+}
 
 
 app.post("/detect-disease", upload.single("image"), async (req, res) => {
