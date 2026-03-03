@@ -246,18 +246,16 @@ const ML_HEALTH_URL = `${ML_URL}/health`;
 const ML_PREDICT_URL = `${ML_URL}/predict`;
 
 async function wakeMlServer() {
-  // try 3 times
-  for (let i = 0; i < 3; i++) {
     try {
       console.log("calling ml server",ML_HEALTH_URL);
       await axios.get(ML_HEALTH_URL, { timeout: 120000 });
       return true;
     } catch (e) {
-      await new Promise(r => setTimeout(r, 5000)); // wait 3s then call the server again.
+      // await new Promise(r => setTimeout(r, 5000)); // wait 3s then call the server again.
+      console.log(e);
+      return false;
     }
   }
-  return false;
-}
 
 
 app.post("/detect-disease", upload.single("image"), async (req, res) => {
