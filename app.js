@@ -31,7 +31,7 @@ const Prediction = require("./models/prediction");
 
 const isRender = !!process.env.RENDER;
 const ML_URL = isRender
-  ? "https://smart-crop-disease-detection-ml-server.onrender.com/predict"
+  ? "https://smart-crop-disease-detection-ml-server.onrender.com"
   : "http://127.0.0.1:5000/predict";
 
 // ________________________________________________________________________________
