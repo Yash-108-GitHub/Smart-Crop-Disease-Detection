@@ -253,6 +253,7 @@ app.get("/detect-disease", (req, res) => {
 // const ML_HEALTH_URL = `${ML_URL}/health`;
 // const ML_PREDICT_URL = `${ML_URL}/predict`;
 
+
 async function wakeMlServer() {
   console.log("WAKE calling:", ML_HEALTH_URL);
 
