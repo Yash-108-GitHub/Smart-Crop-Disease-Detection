@@ -254,35 +254,20 @@ app.get("/detect-disease", (req, res) => {
 // const ML_PREDICT_URL = `${ML_URL}/predict`;
 
 
-async function wakeMlServer() {
-  console.log("WAKE calling:", ML_HEALTH_URL);
-
-  const maxWait = 120000; // 2 minutes
+async function wakeMlServer(maxWaitMs = 90000) { // 90 seconds
   const start = Date.now();
+  let delay = 2000;
 
-  while (Date.now() - start < maxWait) {
+  while (Date.now() - start < maxWaitMs) {
     try {
-      const resp = await axios.get(ML_HEALTH_URL, {
-        timeout: 15000,
-        validateStatus: () => true
-      });
-
-      if (
-        resp.status === 200 &&
-        typeof resp.data === "object" &&
-        resp.data.status === "ok"
-      ) {
-        console.log("ML READY ✅");
-        return true;
-      }
-
-      console.log("Not ready:", resp.status);
-
+      const res = await axios.get(ML_HEALTH_URL, { timeout: 15000 });
+      if (res.status === 200) return true;
     } catch (e) {
-      console.log("Error:", e.message);
+      // 502/503/504 = Render still booting (normal on cold start)
     }
 
-    await new Promise(r => setTimeout(r, 5000)); // wait 5s
+    await new Promise(r => setTimeout(r, delay));
+    delay = Math.min(delay + 2000, 10000); // 2s -> 4s -> 6s ... max 10s
   }
 
   return false;
