@@ -29,11 +29,19 @@ const Prediction = require("./models/prediction");
 // 🖥 On your local machine:
 // process.env.RENDER = undefined
 
+// const isRender = !!process.env.RENDER;
+// const ML_URL = isRender
+//   ? "https://smart-crop-disease-detection-ml-server.onrender.com"
+//   : "http://127.0.0.1:5000";
+
 const isRender = !!process.env.RENDER;
-const ML_URL = isRender
+
+const ML_BASE = isRender
   ? "https://smart-crop-disease-detection-ml-server.onrender.com"
   : "http://127.0.0.1:5000";
 
+const ML_HEALTH_URL = `${ML_BASE}/health`;
+const ML_PREDICT_URL = `${ML_BASE}/predict`;
 
 // ________________________________________________________________________________
 // this is used to make the uploads section to store the image then render can use it for detecting disease.
@@ -242,35 +250,38 @@ app.get("/detect-disease", (req, res) => {
 
 
 // wake up ml flask server before calling it.
-const ML_HEALTH_URL = `${ML_URL}/health`;
-const ML_PREDICT_URL = `${ML_URL}/predict`;
+// const ML_HEALTH_URL = `${ML_URL}/health`;
+// const ML_PREDICT_URL = `${ML_URL}/predict`;
 
-async function wakeMlServer(maxWaitMs = 90000) {
+async function wakeMlServer() {
+  console.log("WAKE calling:", ML_HEALTH_URL);
+
+  const maxWait = 120000; // 2 minutes
   const start = Date.now();
 
-  while (Date.now() - start < maxWaitMs) {
+  while (Date.now() - start < maxWait) {
     try {
       const resp = await axios.get(ML_HEALTH_URL, {
         timeout: 15000,
-        validateStatus: () => true, // don't throw on non-200
+        validateStatus: () => true
       });
 
-      // If Render is warming, it often returns HTML (string)
-      const isJsonOk =
+      if (
         resp.status === 200 &&
         typeof resp.data === "object" &&
-        resp.data?.status === "ok";
+        resp.data.status === "ok"
+      ) {
+        console.log("ML READY ✅");
+        return true;
+      }
 
-      if (isJsonOk) return true;
-
-      // If you want: print what you received (HTML vs code)
-      console.log("WAKE not ready:", resp.status, typeof resp.data);
+      console.log("Not ready:", resp.status);
 
     } catch (e) {
-      console.log("WAKE error:", e.code || e.message);
+      console.log("Error:", e.message);
     }
 
-    await new Promise(r => setTimeout(r, 5000)); // wait 5s then retry
+    await new Promise(r => setTimeout(r, 5000)); // wait 5s
   }
 
   return false;
@@ -299,6 +310,8 @@ app.post("/detect-disease", upload.single("image"), async (req, res) => {
         error: "ML server is waking up. Please try again in 25-30 seconds."
       });
     }
+
+    console.log("POSTING TO:", ML_PREDICT_URL);
 
     const response = await axios.post(ML_PREDICT_URL, formData, {
       headers: formData.getHeaders(),
