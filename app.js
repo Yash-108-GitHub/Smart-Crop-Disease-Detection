@@ -252,7 +252,6 @@ async function wakeMlServer() {
       return true;
     } catch (e) {
       // await new Promise(r => setTimeout(r, 5000)); // wait 3s then call the server again.
-      console.log(e);
       return false;
     }
   }
