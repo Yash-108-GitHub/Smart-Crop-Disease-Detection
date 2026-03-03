@@ -249,10 +249,10 @@ async function wakeMlServer() {
   // try 3 times
   for (let i = 0; i < 3; i++) {
     try {
-      await axios.get(ML_HEALTH, { timeout: 600000 });
+      await axios.get(ML_HEALTH, { timeout: 1000000 });
       return true;
     } catch (e) {
-      await new Promise(r => setTimeout(r, 8000)); // wait 4s
+      await new Promise(r => setTimeout(r, 4000)); // wait 4s
     }
   }
   return false;
