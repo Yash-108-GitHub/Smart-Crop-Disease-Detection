@@ -259,6 +259,7 @@ app.get("/detect-disease", (req, res) => {
 
 
 async function wakeMlServer(maxWaitMs = 90000) { // 90 seconds
+  console.log("waking up");
   const start = Date.now();
   let delay = 2000;
 
