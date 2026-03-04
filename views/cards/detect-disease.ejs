@@ -15,7 +15,7 @@
       <div class="card shadow-sm p-3">
         <h5 class="mb-3">Upload Leaf Image</h5>
 
-        <% if (error) { %>
+        <% if (error === "Prediction failed. ML server not reachable.") { %>
           <div class="alert alert-danger"><%= error %></div>
         <% } %>
 
