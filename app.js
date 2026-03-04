@@ -293,7 +293,6 @@ app.post("/detect-disease", upload.single("image"), async (req, res) => {
     return res.render("cards/detect-disease", {
       prediction: response.data,
       imageUrl,
-      error: null
     });
 
   } catch (err) {
