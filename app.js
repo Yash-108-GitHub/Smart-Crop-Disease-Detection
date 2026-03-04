@@ -300,8 +300,8 @@ app.post("/detect-disease", upload.single("image"), async (req, res) => {
     console.log(err?.message || err);
     return res.render("cards/detect-disease", {
       prediction: null,
-      imageUrl: null
-      // error: "Prediction failed. ML server not reachable."
+      imageUrl: null,
+      error: "Prediction failed. ML server not reachable."
     });
   }
 });
