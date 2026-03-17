@@ -1,6 +1,7 @@
+# Crop Disease Detection System
 Click here to view the project:
 
-Live Demo: https://smart-crop-disease-detection-i87b.onrender.com/
+🚀  Live Demo: https://smart-crop-disease-detection-i87b.onrender.com/
 
 
 ## Description
