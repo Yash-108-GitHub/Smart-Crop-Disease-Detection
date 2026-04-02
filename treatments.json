@@ -1,0 +1,162 @@
+{
+  "Apple___Apple_scab": {
+    "treatment": "Apply fungicides like Captan or Mancozeb",
+    "prevention": "Remove fallen leaves and ensure proper air circulation"
+  },
+  "Apple___Black_rot": {
+    "treatment": "Use fungicides like Myclobutanil",
+    "prevention": "Prune infected areas and sanitize tools"
+  },
+  "Apple___Cedar_apple_rust": {
+    "treatment": "Apply fungicides such as sulfur or myclobutanil",
+    "prevention": "Avoid planting near cedar trees"
+  },
+  "Apple___healthy": {
+    "treatment": "No treatment required",
+    "prevention": "Maintain proper watering and fertilization"
+  },
+
+  "Cherry_(including_sour)___Powdery_mildew": {
+    "treatment": "Apply sulfur-based fungicides",
+    "prevention": "Ensure sunlight exposure and proper spacing"
+  },
+  "Cherry_(including_sour)___healthy": {
+    "treatment": "No treatment required",
+    "prevention": "Maintain plant hygiene"
+  },
+
+  "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot": {
+    "treatment": "Use fungicides like Azoxystrobin",
+    "prevention": "Rotate crops and use resistant varieties"
+  },
+  "Corn_(maize)___Common_rust_": {
+    "treatment": "Apply fungicides early",
+    "prevention": "Use resistant hybrids"
+  },
+  "Corn_(maize)___Northern_Leaf_Blight": {
+    "treatment": "Use appropriate fungicides",
+    "prevention": "Practice crop rotation"
+  },
+  "Corn_(maize)___healthy": {
+    "treatment": "No treatment required",
+    "prevention": "Proper irrigation and nutrition"
+  },
+
+  "Grape___Black_rot": {
+    "treatment": "Apply fungicides like Mancozeb",
+    "prevention": "Remove mummified fruits and prune vines"
+  },
+  "Grape___Esca_(Black_Measles)": {
+    "treatment": "Remove infected vines",
+    "prevention": "Avoid pruning during wet weather"
+  },
+  "Grape___Leaf_blight_(Isariopsis_Leaf_Spot)": {
+    "treatment": "Use fungicides like copper sprays",
+    "prevention": "Ensure good airflow"
+  },
+  "Grape___healthy": {
+    "treatment": "No treatment required",
+    "prevention": "Maintain vineyard hygiene"
+  },
+
+  "Orange___Haunglongbing_(Citrus_greening)": {
+    "treatment": "No cure available; remove infected plants",
+    "prevention": "Control psyllid insects"
+  },
+
+  "Peach___Bacterial_spot": {
+    "treatment": "Apply copper-based bactericides",
+    "prevention": "Avoid overhead irrigation"
+  },
+  "Peach___healthy": {
+    "treatment": "No treatment required",
+    "prevention": "Proper orchard management"
+  },
+
+  "Pepper,_bell___Bacterial_spot": {
+    "treatment": "Use copper sprays",
+    "prevention": "Use disease-free seeds"
+  },
+  "Pepper,_bell___healthy": {
+    "treatment": "No treatment required",
+    "prevention": "Maintain proper spacing"
+  },
+
+  "Potato___Early_blight": {
+    "treatment": "Apply fungicides like Chlorothalonil",
+    "prevention": "Rotate crops and remove debris"
+  },
+  "Potato___Late_blight": {
+    "treatment": "Use fungicides like Mancozeb",
+    "prevention": "Avoid excessive moisture"
+  },
+  "Potato___healthy": {
+    "treatment": "No treatment required",
+    "prevention": "Good soil management"
+  },
+
+  "Raspberry___healthy": {
+    "treatment": "No treatment required",
+    "prevention": "Maintain proper care"
+  },
+
+  "Soybean___healthy": {
+    "treatment": "No treatment required",
+    "prevention": "Use quality seeds"
+  },
+
+  "Squash___Powdery_mildew": {
+    "treatment": "Apply sulfur fungicides",
+    "prevention": "Ensure proper sunlight and airflow"
+  },
+
+  "Strawberry___Leaf_scorch": {
+    "treatment": "Use fungicides",
+    "prevention": "Avoid overcrowding"
+  },
+  "Strawberry___healthy": {
+    "treatment": "No treatment required",
+    "prevention": "Proper irrigation"
+  },
+
+  "Tomato___Bacterial_spot": {
+    "treatment": "Apply copper-based bactericides",
+    "prevention": "Avoid wet leaves"
+  },
+  "Tomato___Early_blight": {
+    "treatment": "Use fungicides like Chlorothalonil",
+    "prevention": "Remove infected leaves"
+  },
+  "Tomato___Late_blight": {
+    "treatment": "Apply Mancozeb or Metalaxyl",
+    "prevention": "Avoid humidity and overcrowding"
+  },
+  "Tomato___Leaf_Mold": {
+    "treatment": "Use fungicides like Chlorothalonil",
+    "prevention": "Improve ventilation"
+  },
+  "Tomato___Septoria_leaf_spot": {
+    "treatment": "Apply fungicides",
+    "prevention": "Remove infected leaves"
+  },
+  "Tomato___Spider_mites Two-spotted_spider_mite": {
+    "treatment": "Use miticides or neem oil",
+    "prevention": "Maintain humidity levels"
+  },
+  "Tomato___Target_Spot": {
+    "treatment": "Apply fungicides",
+    "prevention": "Avoid leaf wetness"
+  },
+  "Tomato___Tomato_mosaic_virus": {
+    "treatment": "Remove infected plants",
+    "prevention": "Use resistant seeds"
+  },
+  "Tomato___Tomato_Yellow_Leaf_Curl_Virus": {
+    "treatment": "Control whiteflies",
+    "prevention": "Use resistant varieties"
+  },
+  "Tomato___healthy": {
+    "treatment": "No treatment required",
+    "prevention": "Maintain proper care"
+  }
+}

@@ -23,7 +23,6 @@ IMG_SIZE = 160
 
 # class_labels = sorted(os.listdir(DATASET_PATH))
 
-# 
 
 @app.get("/health")
 def health():

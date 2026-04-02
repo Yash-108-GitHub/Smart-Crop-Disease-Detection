@@ -4,6 +4,8 @@ require('dotenv').config();
 
 const express = require("express");
 const app = express();
+const dns = require("dns");
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
 const mongoose = require("mongoose");
 const path = require("path");
@@ -17,6 +19,9 @@ const FormData = require("form-data");
 const fs = require("fs");
 const axios = require("axios");
 const Prediction = require("./models/prediction");
+
+const { calculateSeverity } = require("./public/js/severity"); // import the severity calculation function
+
 
 // _______________________________________________________________________________
 // if we are using render then predict-disease route will use render ml server,
@@ -34,7 +39,7 @@ const ML_URL = isRender
   ? "https://smart-crop-disease-detection-ml-server.onrender.com"
   : "http://127.0.0.1:5000";
 
-console.log("isRender:", isRender);
+// console.log("isRender:", isRender);
 
 // ________________________________________________________________________________
 // this is used to make the uploads section to store the image then render can use it for detecting disease.
@@ -53,6 +58,7 @@ const { runInNewContext } = require('vm');
 // ____________________________________________________________________
 //Atlas DB URL
 const dbUrl = process.env.MONGO_URL;
+console.log("DB URL:", dbUrl);
 
 main()
  .then(()=>{
@@ -65,7 +71,7 @@ main()
  async function main(){
     await mongoose.connect(dbUrl);
  }
-
+  
 // ________________________________________________________________________________
 
 app.set("views",path.join(__dirname,"views"));
@@ -77,7 +83,7 @@ app.use(methodOverride("_method"));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.engine("ejs",ejsMate);//boilderplating.
 app.use(express.static(path.join(__dirname,"/public")));
-
+app.use(express.static("public"));
 // ____________________________________________________________________________
 
 const store = MongoStore.create({
@@ -233,8 +239,8 @@ app.get("/home", (req, res) => {
 
 // ____________________________________________________________________________________________________________________
 app.get("/detect-disease", (req, res) => {
+    console.log("user id:", req.user._id);
     res.render("cards/detect-disease");
-    // res.send("predict disease route");
 });
 
 
@@ -245,17 +251,8 @@ const ML_PREDICT_URL = `${ML_URL}/predict`;
 console.log("POSTING TO:", ML_PREDICT_URL);
 
 
-// async function wakeMlServer() {
-//   for (let i = 0; i < 8; i++) {          // more tries
-//     try {
-//       await axios.get(ML_HEALTH, { timeout: 15000 });
-//       return true;
-//     } catch (e) {
-//       await new Promise(r => setTimeout(r, 8000)); // wait longer
-//     }
-//   }
-//   return false;
-// }
+const treatment = require("./treatments.json");
+
 
 
 app.post("/detect-disease", upload.single("image"), async (req, res) => {
@@ -271,16 +268,6 @@ app.post("/detect-disease", upload.single("image"), async (req, res) => {
     const formData = new FormData();
     formData.append("image", fs.createReadStream(req.file.path));
 
-    // 👇 ADD THIS BEFORE CALLING ML
-    // const ok = await wakeMlServer();
-    // if (!ok) {
-    //   return res.render("cards/detect-disease", {
-    //     prediction: null,
-    //     imageUrl: null,
-    //     error: "ML server is waking up. Please try again in 25-30 seconds."
-    //   });
-    // }
-
     const response = await axios.post(ML_PREDICT_URL, formData, {
       headers: formData.getHeaders(),
       timeout: 180000,
@@ -288,11 +275,38 @@ app.post("/detect-disease", upload.single("image"), async (req, res) => {
       maxContentLength: Infinity,
     });
 
+    const severity = await calculateSeverity(req.file.path);
+    console.log("image path:", req.file.path);
+    console.log("calculated severity:", severity);
+
+
     const imageUrl = `/uploads/${req.file.filename}`;
 
+
+    console.log("ML Response:", response.data); 
+    console.log("image url:", imageUrl); 
+    
+    const data = { 
+      userId: req.user._id,
+      disease: response.data.disease,
+      confidence: response.data.confidence,
+    }
+
+    let predictionData = new Prediction(data);
+    let x = await predictionData.save();
+
+    console.log(x);
+
+    // sending treatment based on disease
+    const disease = response.data.disease;
+
+    const suggestion = treatment[disease] || {treatment : "No data", prevention: "No data"}; // we require json data in treatment object.
+    console.log(suggestion);
+
     return res.render("cards/detect-disease", {
-      prediction: response.data,
+      prediction: { ...response.data, severity },
       imageUrl,
+      suggestion
     });
 
   } catch (err) {
@@ -366,7 +380,7 @@ app.get("/weekly-analysis", async (req, res) => {
       trend,
       suggestion,
       scans
-    });
+    }); 
 
   } catch (err) {
     console.log(err);
@@ -387,6 +401,6 @@ app.use((err, req, res, next) => {
 });
 
 // ____________________________________________________________________________________________________________
-app.listen("4000",()=>{
+app.listen("4000",async ()=>{
     console.log("app is listening on port 4000");
 })

@@ -21,6 +21,7 @@
     "express-ejs-layouts": "^2.5.1",
     "express-session": "^1.19.0",
     "form-data": "^4.0.5",
+    "jimp": "^0.16.1",
     "method-override": "^3.0.0",
     "mongoose": "^9.2.1",
     "multer": "^2.0.2",
