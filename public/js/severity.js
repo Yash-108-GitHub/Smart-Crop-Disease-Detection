@@ -1,4 +1,4 @@
-const Jimp = require("jimp"); // this package is used to read the image and convert it to buffer, then we can send that buffer to ml server for severity prediction.
+const Jimp = require("jimp"); // this package is used to read the image and main perpose is to calculate the severity of the disease in the leaf by counting the number of infected pixels and comparing it to the total number of pixels in the image. The function takes the file path of the image as input, resizes it to match the (model) input size, and then loops over all pixels to count how many are classified as "diseased" based on a simple color threshold. Finally, it calculates the percentage of infected pixels and assigns a severity level (Mild, Moderate, Severe) based on that percentage.
 
 async function calculateSeverity(filePath) {
   const image = await Jimp.read(filePath);

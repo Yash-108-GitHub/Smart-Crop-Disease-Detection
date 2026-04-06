@@ -1,0 +1,22 @@
+works:-
+
+3. Weather-Based Risk Prediction (Very Advanced 🔥)
+Add:
+Temperature
+Humidity
+Rainfall
+Then predict:
+“High probability of fungal infection in next 5 days”
+
+
+🌱 5. Organic vs Chemical Suggestion Toggle
+Farmer chooses:
+🌿 Organic treatment
+🧪 Chemical treatment
+System recommends accordingly.
+
+
+📍 1. Geo-Tagging + Disease Spread Map
+Store user location (latitude/longitude)
+Show heatmap of disease outbreak
+Predict spread using simple clustering (K-Means)

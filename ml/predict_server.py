@@ -1,3 +1,5 @@
+# Command to activate venv : venv310\Scripts\activate
+
 from flask import Flask, request, jsonify
 import tensorflow as tf
 from tensorflow.keras.preprocessing import image
