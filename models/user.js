@@ -8,6 +8,10 @@ const userSchema = new Schema({
         type:String,
         required:true,
     },
+    lastLogin: { 
+        type: Date, 
+        default: Date.now 
+    }
 });
 
 userSchema.plugin(passportLocalMongoose.default || passportLocalMongoose);

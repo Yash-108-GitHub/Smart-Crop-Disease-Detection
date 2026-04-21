@@ -171,8 +171,17 @@ app.post(
     failureFlash: true,
   }),
   async (req, res) => {
-    req.flash("success", "Welcome back!");
-    res.redirect("/home");
+    try {
+      // Update last login in the User model
+      req.user.lastLogin = new Date();
+      await req.user.save(); // save to MongoDB
+
+      req.flash("success", "Welcome back!");
+      res.redirect("/home");
+    } catch (err) {
+      console.error("Failed to update last login:", err);
+      res.redirect("/home");
+    }
   }
 );
 
@@ -233,8 +242,64 @@ app.post("/test", (req, res) => {
   res.json({ received: req.body });
 });
 
-app.get("/home", (req, res) => {
-   res.render("home");
+app.get("/home", async (req, res) => {
+  try {
+    const user = req.user; // logged-in farmer
+
+    // Fetch predictions from MongoDB
+    const scans = await Prediction.find({ userId: user._id }).sort({ createdAt: -1 });
+
+    // Crop summary
+    const totalCrops = scans.length;
+    const healthyCrops = scans.filter(s => s.disease === "Healthy").length;
+    const diseasedCrops = totalCrops - healthyCrops;
+
+    // Recent activity (last 3 predictions)
+    const recentActivity = scans.slice(-3).reverse().map(p => ({
+      action: "Disease detected",
+      detail: p.disease
+    }));
+
+    // Alerts: any severe diseases + example alerts
+    const alerts = scans
+      .filter(p => p.severity === "Severe")
+      .map(p => `🚨 Disease detected in ${p.disease}`);
+    alerts.push("💧 Low soil moisture");
+    alerts.push("🌧 Rain expected tomorrow");
+
+    // Weather example (replace with live API if needed)
+    const weather = {
+      temperature: 29,
+      humidity: 65,
+      condition: "Partly Cloudy",
+      wind: "8 km/h",
+      rainChance: "10%"
+    };
+
+    // Render the dashboard template with dynamic data
+    res.render("home", {
+      user,
+      scans,
+      totalCrops,
+      healthyCrops,
+      diseasedCrops,
+      recentActivity,
+      alerts,
+      weather
+    });
+  } catch (err) {
+    console.error(err);
+    res.render("home", {
+      user: req.user,
+      scans: [],
+      totalCrops: 0,
+      healthyCrops: 0,
+      diseasedCrops: 0,
+      recentActivity: [],
+      alerts: [],
+      weather: {}
+    });
+  }
 });
 
 // ____________________________________________________________________________________________________________________
@@ -280,8 +345,22 @@ app.post("/detect-disease", upload.single("image"), async (req, res) => {
     console.log("calculated severity:", severity);
 
 
+    
     const imageUrl = `/uploads/${req.file.filename}`;
 
+    // sending treatment based on disease
+    const disease = response.data.disease;
+
+    const suggestion = treatment[disease] || {treatment : "No data", prevention: "No data"}; // we require json data in treatment object.
+    console.log(suggestion);
+
+    // saving prediction in database with severity and leaf name
+    const dataTreatment = require("./treatments.json");
+    const info = dataTreatment[disease];
+    const leafName = disease.split("___")[0];
+
+    // console.log(JSON.stringify(updatedData, null, 2));
+    console.log("leaf name:", leafName);
 
     console.log("ML Response:", response.data); 
     console.log("image url:", imageUrl); 
@@ -290,6 +369,9 @@ app.post("/detect-disease", upload.single("image"), async (req, res) => {
       userId: req.user._id,
       disease: response.data.disease,
       confidence: response.data.confidence,
+      leafName,
+      severity,
+      imageUrl: `/uploads/${req.file.filename}`,
     }
 
     let predictionData = new Prediction(data);
@@ -297,11 +379,13 @@ app.post("/detect-disease", upload.single("image"), async (req, res) => {
 
     console.log(x);
 
-    // sending treatment based on disease
-    const disease = response.data.disease;
+    // // sending treatment based on disease
+    // const disease = response.data.disease;
 
-    const suggestion = treatment[disease] || {treatment : "No data", prevention: "No data"}; // we require json data in treatment object.
-    console.log(suggestion);
+    // const suggestion = treatment[disease] || {treatment : "No data", prevention: "No data"}; // we require json data in treatment object.
+    // console.log(suggestion);
+
+
 
     return res.render("cards/detect-disease", {
       prediction: { ...response.data, severity },
@@ -352,6 +436,7 @@ app.get("/weekly-analysis", async (req, res) => {
     let trend = "No Data";
     let suggestion = "Upload weekly images to see progress and suggestions.";
 
+    const reports = suggestion;
     if (totalScans >= 2) {
       const prev = scans[totalScans - 2];
       const curr = scans[totalScans - 1];
@@ -394,6 +479,71 @@ app.get("/weekly-analysis", async (req, res) => {
     });
   }
 });
+
+
+
+app.get("/prediction/:id", async (req, res) => {
+  try {
+    const prediction = await Prediction.findById(req.params.id);
+
+    if (!prediction) {
+      req.flash("error", "Prediction not found");
+      return res.redirect("/home");
+    }
+
+    // Render a page showing the prediction details
+    res.render("cards/prediction-detail", { prediction });
+  } catch (err) {
+    console.error(err);
+    req.flash("error", "Something went wrong");
+    res.redirect("/home");
+  }
+});
+
+// ______________________________________________________________________________________
+
+
+
+app.get("/generate-report", async (req, res) => {
+  try {
+    // Fetch all predictions for the logged-in user
+    const reports = await Prediction.find({ userId: req.user._id }).sort({ createdAt: -1 });
+
+    // Render the Digital Report page with dynamic data
+    res.render("cards/digital-report", { reports, treatment, farmer: req.user });
+  } catch (err) {
+    console.error(err);
+    res.render("cards/digital-report", { reports: [], treatment });
+  }
+});
+
+// ________________________________________________________________________________________________
+
+// GET route to render the page
+app.get("/weather-based-prediction", async (req, res) => {
+  res.render("cards/WeatherBasedPrediction");
+});
+
+// Optional POST route if you want to save predictions in database
+app.post("/weather-based-prediction", async (req, res) => {
+  const { temp, humidity, rain } = req.body;
+
+  // Simple server-side rule-based logic (optional)
+  let risk = "";
+  if (humidity > 70 && rain > 20 && temp >= 20 && temp <= 30) risk = "High";
+  else if (humidity > 60 && rain > 10) risk = "Moderate";
+  else risk = "Low";
+
+  // Optionally save to DB
+  // await WeatherPrediction.create({ userId: req.user._id, temp, humidity, rain, risk });
+
+  res.json({ risk }); // return result as JSON
+});
+
+app.post("/weather-based-prediction", async (req, res) => {
+
+});
+
 // ________________________________________________________________________________________________
 app.use((err, req, res, next) => {
   console.log("MULTER/APP ERROR:", err);

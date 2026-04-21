@@ -27,26 +27,101 @@
 
   <!-- Top Info Row -->
   <div class="row g-4 mb-4">
+
+    <!-- Profile Card -->
     <div class="col-md-6">
-      <div class="card shadow-sm p-3 top-card">
-        <h6 class="mb-2">👤 Profile</h6>
-        <p class="mb-0 text-muted small">
-          Welcome Farmer 👋 <br>
-          Manage crops and monitor health reports.
+      <div class="card shadow-lg p-4 top-card border-0 rounded-4">
+        <div class="d-flex align-items-center justify-content-between">
+          <h6 class="mb-2 fw-bold text-primary">👤 Profile</h6>
+          <span class="badge bg-success">Active</span>
+        </div>
+        <p class="mb-2 text-muted small">
+          Welcome <strong><%= user.username %></strong> 👋 <br>
+          Smart Crop Monitoring Dashboard
         </p>
+        <hr class="my-2">
+        <div class="small text-muted">
+          🌍 Location: <strong><%= user.location %></strong><br>
+          🌱 Role: <strong>Farmer</strong><br>
+          📅 Last Login: <strong><%= user.lastLogin %></strong>
+        </div>
+        <div class="mt-3">
+          <button class="btn btn-sm btn-outline-primary rounded-pill">View Profile</button>
+        </div>
       </div>
     </div>
 
+    <!-- Weather Card -->
     <div class="col-md-6">
-      <div class="card shadow-sm p-3 top-card">
-        <h6 class="mb-2">⛅ Weather</h6>
-        <p class="mb-0 text-muted small">
-          29°C | Humidity: 65% <br>
-          Good conditions for crop growth.
+      <div class="card shadow-lg p-4 top-card border-0 rounded-4">
+        <div class="d-flex align-items-center justify-content-between">
+          <h6 class="mb-2 fw-bold text-warning">⛅ Weather</h6>
+          <span class="badge bg-info text-dark">Live</span>
+        </div>
+        <p class="mb-2 text-muted small">
+          <strong><%= weather.temperature %>°C</strong> | Humidity: <strong><%= weather.humidity %>%</strong><br>
+          Good conditions for crop growth 🌱
         </p>
+        <hr class="my-2">
+        <div class="small text-muted">
+          🌤 Condition: <%= weather.condition %> <br>
+          💨 Wind: <%= weather.wind %> <br>
+          🌧 Rain Chance: <%= weather.rainChance %>
+        </div>
+        <div class="mt-3">
+          <button class="btn btn-sm btn-outline-warning rounded-pill">Full Forecast</button>
+        </div>
       </div>
     </div>
+
   </div>
+
+  <!-- Extended Dashboard Row -->
+  <div class="row g-4">
+
+    <!-- Crop Summary -->
+    <div class="col-md-4">
+      <div class="card shadow-sm p-3 border-0 rounded-4">
+        <h6 class="fw-bold text-success">🌾 Crop Summary</h6>
+        <p class="small text-muted mb-2">Monitor your current crop status.</p>
+        <ul class="small text-muted mb-0">
+          <li>Total Crops: <strong><%= totalCrops %></strong></li>
+          <li>Healthy: <strong class="text-success"><%= healthyCrops %></strong></li>
+          <li>Diseased: <strong class="text-danger"><%= diseasedCrops %></strong></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="col-md-4">
+      <div class="card shadow-sm p-3 border-0 rounded-4">
+        <h6 class="fw-bold text-info">📊 Recent Activity</h6>
+        <p class="small text-muted mb-2">Latest actions in your dashboard.</p>
+        <ul class="small text-muted mb-0">
+          <% recentActivity.forEach(act => { %>
+            <li>✔ <%= act.action %>: <%= act.detail %></li>
+          <% }) %>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Alerts -->
+    <div class="col-md-4">
+      <div class="card shadow-sm p-3 border-0 rounded-4">
+        <h6 class="fw-bold text-danger">⚠ Alerts</h6>
+        <p class="small text-muted mb-2">Important notifications.</p>
+        <ul class="small text-muted mb-0">
+          <% alerts.forEach(a => { %>
+            <li><%= a %></li>
+          <% }) %>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+  
 
   <!-- Feature Cards -->
 <div class="feature-wrapper">
@@ -65,21 +140,33 @@
     </div>
   </a>
 
-  <!-- <a href="/severity-analysis" class="text-decoration-none text-dark">
+  <a href="/weekly-analysis" class="text-decoration-none text-dark">
     <div class="card feature-card shadow-sm">
-      <img src="/images/Severity Analysis.jpeg"
-           class="card-img-top dash-img"
-           alt="Severity Analysis">
+      <img src="/images/weekly analysis.jpeg" class="card-img-top dash-img" alt="Weekly Analysis">
       <div class="card-body text-center">
-        <h6 class="card-title mb-2">Severity Analysis</h6>
+        <h6 class="card-title mb-2">Weekly Analysis</h6>
+        <p class="card-text text-muted small mb-0">
+          Track weekly crop health and get suggestions.
+        </p>
+      </div>
+    </div>
+  </a>
+
+  <a href="/weather-based-prediction" class="text-decoration-none text-dark">
+    <div class="card feature-card shadow-sm">
+      <img src="/images/weather-based-prediction.jpeg"
+           class="card-img-top dash-img"
+           alt="Weather-Based Prediction">
+      <div class="card-body text-center">
+        <h6 class="card-title mb-2">Weather-Based Prediction</h6>
         <p class="card-text text-muted small">
           Check infection severity and confidence score.
         </p>
       </div>
     </div>
-  </a> -->
+  </a>
 
-  <a href="/digital-report" class="text-decoration-none text-dark">
+  <a href="/generate-report" class="text-decoration-none text-dark">
     <div class="card feature-card shadow-sm">
       <img src="/images/Digital Report.jpeg"
            class="card-img-top dash-img"
@@ -93,18 +180,7 @@
     </div>
   </a>
 
-  <a href="/weekly-analysis" class="text-decoration-none text-dark">
-    <div class="card feature-card shadow-sm">
-      <img src="/images/weekly analysis.jpeg" class="card-img-top dash-img" alt="Weekly Analysis">
-      <div class="card-body text-center">
-        <h6 class="card-title mb-2">Weekly Analysis</h6>
-        <p class="card-text text-muted small mb-0">
-          Track weekly crop health and get suggestions.
-        </p>
-      </div>
-    </div>
-  </a>
-
+  
 </div>
 
 </div>

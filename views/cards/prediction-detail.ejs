@@ -1,0 +1,45 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="container py-4">
+
+  <h3 class="mb-4">🌿 Leaf Prediction Result</h3>
+
+  <div class="card shadow-sm p-4 mb-4 rounded-4">
+
+    <!-- Leaf Image -->
+    <div class="text-center mb-4">
+      <img src="<%= prediction.imageUrl %>" 
+           alt="Leaf Image" 
+           class="img-fluid rounded-3" 
+           style="max-height: 300px; object-fit: cover;">
+    </div>
+
+    <!-- Prediction Details -->
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item"><strong>Leaf Name:</strong> <%= prediction.leafName %></li>
+      <li class="list-group-item"><strong>Disease:</strong> <%= prediction.disease %></li>
+      <li class="list-group-item"><strong>Confidence:</strong> <%= prediction.confidence %>%</li>
+      <li class="list-group-item">
+        <strong>Severity:</strong>
+        <% if(prediction.severity === "Mild") { %>
+          <span class="badge bg-success"><%= prediction.severity %></span>
+        <% } else if(prediction.severity === "Moderate") { %>
+          <span class="badge bg-warning text-dark"><%= prediction.severity %></span>
+        <% } else if(prediction.severity === "Severe") { %>
+          <span class="badge bg-danger"><%= prediction.severity %></span>
+        <% } else { %>
+          <span class="badge bg-secondary">N/A</span>
+        <% } %>
+      </li>
+      <li class="list-group-item"><strong>Treatment:</strong> <%= prediction.treatment || "No treatment required" %></li>
+      <li class="list-group-item"><strong>Prevention:</strong> <%= prediction.prevention || "Maintain proper care" %></li>
+      <li class="list-group-item"><strong>Scanned At:</strong> <%= new Date(prediction.createdAt).toLocaleString() %></li>
+    </ul>
+
+    <div class="mt-4 text-center">
+      <a href="/home" class="btn btn-outline-primary rounded-pill">⬅ Back to Dashboard</a>
+    </div>
+
+  </div>
+
+</div>

@@ -6,7 +6,7 @@ const predictionSchema = new mongoose.Schema({
         ref: "User",
         required: true
     },
-    crop: { 
+    leafName: { 
         type: String, default: "Unknown" 
     },
     disease: { 
@@ -16,14 +16,18 @@ const predictionSchema = new mongoose.Schema({
         type: Number, required: true 
     },
     imageUrl: { 
-        type: String 
+        type: String , default: "none"
     },
+    severity:{
+        type: String
+    }
   },
+
   { 
     timestamps: true 
     // automatically adds the field of "createdAt" in  table
     // it is option in mongoose so it is outside the main schema.
   }
-)
+);
 
 module.exports = mongoose.model("Prediction", predictionSchema);

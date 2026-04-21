@@ -1,0 +1,98 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="container py-5">
+
+  <!-- Heading -->
+  <h3 class="fw-bold mb-3">🌦 Weather-Based Risk Prediction</h3>
+  <p class="text-muted">Predict crop disease risk using weather conditions.</p>
+
+  <!-- Card -->
+  <div class="card p-4 shadow-sm">
+
+    <div class="row g-3">
+
+      <!-- Temperature -->
+      <div class="col-md-4">
+        <label class="form-label">🌡 Temperature (°C)</label>
+        <input type="number" id="temp" class="form-control" placeholder="Enter temperature">
+      </div>
+
+      <!-- Humidity -->
+      <div class="col-md-4">
+        <label class="form-label">💧 Humidity (%)</label>
+        <input type="number" id="humidity" class="form-control" placeholder="Enter humidity">
+      </div>
+
+      <!-- Rainfall -->
+      <div class="col-md-4">
+        <label class="form-label">🌧 Rainfall (mm)</label>
+        <input type="number" id="rain" class="form-control" placeholder="Enter rainfall">
+      </div>
+
+    </div>
+
+    <!-- Button -->
+    <div class="mt-4">
+      <button onclick="predictRisk()" class="btn btn-primary">
+        Predict Risk
+      </button>
+    </div>
+
+    <!-- Result -->
+    <div id="result" class="mt-3"></div>
+
+  </div>
+
+</div>
+
+<script>
+function predictRisk() {
+  let temp = parseFloat(document.getElementById("temp").value);
+  let humidity = parseFloat(document.getElementById("humidity").value);
+  let rain = parseFloat(document.getElementById("rain").value);
+
+  let resultBox = document.getElementById("result");
+
+  if (isNaN(temp) || isNaN(humidity) || isNaN(rain)) {
+    resultBox.innerHTML = "<div class='result-box bg-warning p-2 rounded'>⚠ Please fill all fields correctly.</div>";
+    return;
+  }
+
+  let message = "";
+  let color = "";
+
+  if (humidity > 70 && rain > 20 && temp >= 20 && temp <= 30) {
+    message = `
+      🚨 High Probability of Fungal Infection in the Next 5 Days
+      • Humidity is high (>70%) and rainfall is significant (>20mm).
+      • Temperature is favorable for fungal growth (20–30°C).
+      • Crops are at increased risk of leaf spots and blight.
+      • Monitor your crops closely for early symptoms.
+      • Apply appropriate fungicides if necessary.
+    `;
+    color = "bg-danger text-white";
+  } else if (humidity > 60 && rain > 10) {
+    message = `
+      ⚠ Moderate Risk of Disease Development
+      • Humidity is above 60% and rainfall is moderate.
+      • Conditions may favor fungal or bacterial growth.
+      • Inspect leaves for early signs of infection.
+      • Ensure good air circulation and spacing between plants.
+      • Consider preventive treatments if symptoms appear.
+    `;
+    color = "bg-warning";
+  } else {
+    message = `
+      ✅ Low Risk — Conditions are Safe for Crops
+      • Humidity and rainfall are low, temperature not ideal for disease.
+      • Crops are unlikely to develop significant infection soon.
+      • Continue normal monitoring and maintenance.
+      • Keep irrigation and drainage under control.
+      • Maintain good hygiene to prevent future infections.
+    `;
+    color = "bg-success text-white";
+  }
+
+  resultBox.innerHTML = `<div class='result-box ${color} p-3 rounded' style="white-space: pre-line;">${message}</div>`;
+}
+</script>

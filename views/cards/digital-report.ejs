@@ -1,0 +1,40 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="card shadow-sm">
+  <img src="/images/Digital Report.jpeg" class="card-img-top dash-img" alt="Digital Report">
+  <div class="card-body text-center">
+    <h6 class="card-title mb-2">Digital Report</h6>
+    <p class="card-text text-muted small">
+      Generate crop health report for Krushi Kendra.
+    </p>
+    <!-- Button triggers report generation -->
+    <form action="/generate-report" method="GET">
+      <button type="submit" class="btn btn-primary btn-sm">Generate</button>
+    </form>
+  </div>
+</div>
+
+<div id="report-section" class="mt-4">
+  <% if (reports && reports.length > 0) { %>
+    <h5>Report Summary:</h5>
+
+    <!-- Farmer information -->
+    <div class="mb-3 p-2" style="background:#f8f9fa; border-radius:8px;">
+      <p class="mb-1"><strong>Farmer Name:</strong> <%= farmer.username %></p>
+    </div>
+
+    <ul class="list-group">
+      <% reports.forEach(r => { %>
+        <li class="list-group-item">
+          <strong>Leaf:</strong> <%= r.leafName || "N/A" %> | 
+          <strong>Disease:</strong> <%= r.disease %> | 
+          <strong>Severity:</strong> <%= r.severity || "N/A" %> | 
+          <strong>Treatment:</strong> <%= treatment[r.disease] ? treatment[r.disease].treatment : "No data" %> | 
+          <strong>Prevention:</strong> <%= treatment[r.disease] ? treatment[r.disease].prevention : "No data" %>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <p class="text-muted mt-2">No reports available. Upload leaf images from Disease Detection.</p>
+  <% } %>
+</div>
