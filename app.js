@@ -242,12 +242,48 @@ app.post("/test", (req, res) => {
   res.json({ received: req.body });
 });
 
+app.get("/location", (req, res) => {
+  res.render("page/location", { user: req.user });
+});
+
+app.post("/location", async (req, res) => {
+  try {
+    const cityName = req.body.city;
+    await User.updateOne({ _id: req.user._id }, { location: cityName });
+    req.flash("success", `Location updated to ${cityName}`);
+    res.redirect("/home");
+  } catch (err) {
+    console.error(err);
+    req.flash("error", "Failed to update location");
+    res.redirect("/location");
+  }
+});
+// ___________________________________________________________________________
 app.get("/home", async (req, res) => {
   try {
-    const user = req.user; // logged-in farmer
+    const user = req.user;
+
+    // Use user's location (fallback to Pune)
+    const city = user.location || "Nagpur";
+    const API_URL = "https://api.openweathermap.org/data/2.5/weather";
+    const API_KEY = "8cc6ce23892d1cbff55c74841933e731";
+
+    // Fetch weather data
+    const weatherRes = await axios.get(API_URL, {
+      params: { q: city, appid: API_KEY, units: "metric" }
+    });
+    const data = weatherRes.data;
+    const weather = {
+      temperature: data.main.temp,
+      humidity: data.main.humidity,
+      condition: data.weather[0].main,
+      wind: data.wind.speed + " km/h",
+      rainChance: data.clouds.all
+    };
 
     // Fetch predictions from MongoDB
     const scans = await Prediction.find({ userId: user._id }).sort({ createdAt: -1 });
+    
 
     // Crop summary
     const totalCrops = scans.length;
@@ -260,23 +296,19 @@ app.get("/home", async (req, res) => {
       detail: p.disease
     }));
 
-    // Alerts: any severe diseases + example alerts
-    const alerts = scans
+    // Alerts based on severity + live weather
+    const alerts = [];
+    scans
       .filter(p => p.severity === "Severe")
-      .map(p => `🚨 Disease detected in ${p.disease}`);
-    alerts.push("💧 Low soil moisture");
-    alerts.push("🌧 Rain expected tomorrow");
+      .forEach(p => alerts.push(`🚨 Disease detected in ${p.disease}`));
 
-    // Weather example (replace with live API if needed)
-    const weather = {
-      temperature: 29,
-      humidity: 65,
-      condition: "Partly Cloudy",
-      wind: "8 km/h",
-      rainChance: "10%"
-    };
+    if (weather.humidity > 80) alerts.push("💧 High humidity — risk of fungal diseases");
+    if (weather.temperature > 35) alerts.push("🌡 High temperature — crops may suffer heat stress");
+    if (weather.rainChance > 50) alerts.push("🌧 Heavy chance of rain — check soil drainage");
+    if (parseFloat(weather.wind) > 20) alerts.push("💨 Strong winds expected — secure plants and irrigation");
+    if (weather.temperature < 10) alerts.push("❄️ Low temperature — risk of frost damage");
 
-    // Render the dashboard template with dynamic data
+    // Render the dashboard
     res.render("home", {
       user,
       scans,
@@ -287,6 +319,7 @@ app.get("/home", async (req, res) => {
       alerts,
       weather
     });
+
   } catch (err) {
     console.error(err);
     res.render("home", {

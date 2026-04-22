@@ -11,6 +11,10 @@ const userSchema = new Schema({
     lastLogin: { 
         type: Date, 
         default: Date.now 
+    },
+    location: {
+        type: String,
+        default: "nagpur"
     }
 });
 
