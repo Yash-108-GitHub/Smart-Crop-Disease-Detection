@@ -43,12 +43,18 @@
       <div class="card shadow-sm p-3">
         <h5 class="mb-3">Result</h5>
 
-        <% if (typeof prediction !== "undefined" && prediction) { %>
+        <% if (typeof error !== "undefined" && error) { %>
+          <div class="alert alert-danger mb-3">
+            <%= error %>
+          </div>
+
+        <% } else if (typeof prediction !== "undefined" && prediction) { %>
+
           <div class="mb-3">
             <span class="badge text-bg-success">Prediction Ready ✅</span>
           </div>
 
-          <% if (typeof imageUrl !== "undefined" && imageUrl) { %>
+          <% if (imageUrl) { %>
             <div class="preview-box mb-3">
               <img src="<%= imageUrl %>" alt="Uploaded leaf" style="width:100%; height:280px; object-fit:cover; border-radius:12px;">
             </div>
@@ -60,21 +66,23 @@
           </div>
 
           <div class="p-3 mb-3 rounded" style="background:#f3e6f4;">
-            <p class="mb-0"><Strong>Severity:</Strong> <%= prediction.severity %> </Strong></p>
+            <p class="mb-0"><strong>Severity:</strong> <%= prediction.severity %></p>
           </div>
 
-          <% if(typeof suggestion !== "undefined" && suggestion) { %>
+          <% if (suggestion) { %>
             <div class="p-3 mb-2 rounded" style="background:#c5d9fc;">
               <h5>Suggestion</h5>
               <p class="mb-2"><strong>Treatment:</strong> <%= suggestion.treatment %></p>
               <p class="mb-2"><strong>Prevention:</strong> <%= suggestion.prevention %></p>
             </div>
-          <%}%>
+          <% } %>
 
         <% } else { %>
+
           <div class="text-muted">
             Upload an image to see prediction here.
           </div>
+
         <% } %>
       </div>
     </div>

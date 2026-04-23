@@ -19,6 +19,7 @@ const FormData = require("form-data");
 const fs = require("fs");
 const axios = require("axios");
 const Prediction = require("./models/prediction");
+const Jimp = require("jimp");
 
 const { calculateSeverity } = require("./public/js/severity"); // import the severity calculation function
 
@@ -349,6 +350,29 @@ const ML_PREDICT_URL = `${ML_URL}/predict`;
 console.log("POSTING TO:", ML_PREDICT_URL);
 
 
+async function isLeafImage(filePath) {
+  const image = await Jimp.read(filePath);
+  image.resize(160, 160);
+
+  let greenPixels = 0;
+  const totalPixels = image.bitmap.width * image.bitmap.height;
+
+  image.scan(0, 0, image.bitmap.width, image.bitmap.height, (x, y, idx) => {
+    const r = image.bitmap.data[idx + 0];
+    const g = image.bitmap.data[idx + 1];
+    const b = image.bitmap.data[idx + 2];
+
+    // simple green detection
+    if (g > r && g > b && g > 80) {
+      greenPixels++;
+    }
+  });
+
+  const greenPercentage = (greenPixels / totalPixels) * 100;
+  return greenPercentage > 20; // at least 20% green = leaf
+}
+
+
 const treatment = require("./treatments.json");
 
 
@@ -363,45 +387,56 @@ app.post("/detect-disease", upload.single("image"), async (req, res) => {
       });
     }
 
+    const CONFIDENCE_THRESHOLD = 70; // 70% minimum to accept prediction
+
     const formData = new FormData();
     formData.append("image", fs.createReadStream(req.file.path));
 
-    const response = await axios.post(ML_PREDICT_URL, formData, {
+    // Call ML server once and store in mlResponse
+    const mlResponse = await axios.post(ML_PREDICT_URL, formData, {
       headers: formData.getHeaders(),
       timeout: 180000,
       maxBodyLength: Infinity,
       maxContentLength: Infinity,
     });
 
+    // Block non-leaf images
+    const leafCheck = await isLeafImage(req.file.path);
+    if (!leafCheck) {
+      return res.render("cards/detect-disease", {
+        prediction: null,
+        imageUrl: null,
+        error: "❌ Invalid image. Please upload a leaf image only."
+      });
+    }
+
+    // Block low-confidence predictions
+    if (mlResponse.data.confidence < CONFIDENCE_THRESHOLD) {
+      return res.render("cards/detect-disease", {
+        prediction: null,
+        imageUrl: null,
+        error: "❌ Unclear image or not a leaf. Please upload a clear leaf image only."
+      });
+    }
+
     const severity = await calculateSeverity(req.file.path);
     console.log("image path:", req.file.path);
     console.log("calculated severity:", severity);
 
-
-    
     const imageUrl = `/uploads/${req.file.filename}`;
 
     // sending treatment based on disease
-    const disease = response.data.disease;
-
-    const suggestion = treatment[disease] || {treatment : "No data", prevention: "No data"}; // we require json data in treatment object.
+    const disease = mlResponse.data.disease;
+    const suggestion = treatment[disease] || {treatment : "No data", prevention: "No data"};
     console.log(suggestion);
 
-    // saving prediction in database with severity and leaf name
-    const dataTreatment = require("./treatments.json");
-    const info = dataTreatment[disease];
     const leafName = disease.split("___")[0];
-
-    // console.log(JSON.stringify(updatedData, null, 2));
     console.log("leaf name:", leafName);
 
-    console.log("ML Response:", response.data); 
-    console.log("image url:", imageUrl); 
-    
     const data = { 
       userId: req.user._id,
-      disease: response.data.disease,
-      confidence: response.data.confidence,
+      disease: disease,
+      confidence: mlResponse.data.confidence,
       leafName,
       severity,
       imageUrl: `/uploads/${req.file.filename}`,
@@ -409,21 +444,13 @@ app.post("/detect-disease", upload.single("image"), async (req, res) => {
 
     let predictionData = new Prediction(data);
     let x = await predictionData.save();
-
     console.log(x);
 
-    // // sending treatment based on disease
-    // const disease = response.data.disease;
-
-    // const suggestion = treatment[disease] || {treatment : "No data", prevention: "No data"}; // we require json data in treatment object.
-    // console.log(suggestion);
-
-
-
     return res.render("cards/detect-disease", {
-      prediction: { ...response.data, severity },
+      prediction: { ...mlResponse.data, severity },
       imageUrl,
-      suggestion
+      suggestion,
+      error: null // explicitly null
     });
 
   } catch (err) {
