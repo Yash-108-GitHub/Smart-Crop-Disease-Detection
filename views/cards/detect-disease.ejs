@@ -43,7 +43,7 @@
       <div class="card shadow-sm p-3">
         <h5 class="mb-3">Result</h5>
 
-        <% if (typeof error !== "undefined" && error) { %>
+        <% if (typeof error === "string" && error.length > 0) { %>
           <div class="alert alert-danger mb-3">
             <%= error %>
           </div>

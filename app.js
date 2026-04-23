@@ -392,13 +392,6 @@ app.post("/detect-disease", upload.single("image"), async (req, res) => {
     const formData = new FormData();
     formData.append("image", fs.createReadStream(req.file.path));
 
-    // Call ML server once and store in mlResponse
-    const mlResponse = await axios.post(ML_PREDICT_URL, formData, {
-      headers: formData.getHeaders(),
-      timeout: 180000,
-      maxBodyLength: Infinity,
-      maxContentLength: Infinity,
-    });
 
     // Block non-leaf images
     const leafCheck = await isLeafImage(req.file.path);
@@ -409,6 +402,14 @@ app.post("/detect-disease", upload.single("image"), async (req, res) => {
         error: "❌ Invalid image. Please upload a leaf image only."
       });
     }
+
+    // Call ML server once and store in mlResponse
+    const mlResponse = await axios.post(ML_PREDICT_URL, formData, {
+      headers: formData.getHeaders(),
+      timeout: 180000,
+      maxBodyLength: Infinity,
+      maxContentLength: Infinity,
+    });
 
     // Block low-confidence predictions
     if (mlResponse.data.confidence < CONFIDENCE_THRESHOLD) {
